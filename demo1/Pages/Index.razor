@@ -43,7 +43,7 @@
             // This will return a set of lat/lng
             var points = PolylineEncoder.Decode(polyline);
 
-            List<Graphic> mapMoints = new();
+            List<Graphic> mapPoints = new();
 
             foreach (var point in points)
             {
@@ -51,7 +51,7 @@
                     new Point(point.Longitude, point.Latitude),
                     new SimpleMarkerSymbol(new Outline(new MapColor("white"), 1.0), new MapColor("red")));
 
-                mapMoints.Add(g);
+                mapPoints.Add(g);
             }
 
             // Uncomment out call to Clear() and the app will crash
@@ -71,7 +71,7 @@
             //await pointsLayer.Clear();
 
             // The first time the app is built, the points may appear. Subsequent runs will not show the points
-            await pointsLayer.Add(mapMoints);
+            await pointsLayer.Add(mapPoints);
         }
         catch (Exception ex)
         {
