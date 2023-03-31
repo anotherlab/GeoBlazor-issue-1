@@ -1,0 +1,84 @@
+﻿@page "/"
+
+<MapView Longitude="_longitude" Latitude="_latitude" Zoom="11" Style="height: 600px; width: 100%;">
+    <Map ArcGisDefaultBasemap="arcgis-navigation">
+        <GraphicsLayer @ref="pointsLayer">
+
+
+            @*
+            This point defined only in XAML will work just fine
+            *@
+            <Graphic>
+                <Point Longitude="-78.78077" Latitude="42.895715" />
+                <SimpleMarkerSymbol Color="@(new MapColor(81, 46, 132))">
+                    <Outline Color="@(new MapColor(255, 255, 255))" Width="1" />
+                </SimpleMarkerSymbol>
+            </Graphic>
+
+        </GraphicsLayer>
+    </Map>
+    <ScaleBarWidget Position="OverlayPosition.BottomLeft" />
+    <CompassWidget Position="OverlayPosition.TopLeft" />
+</MapView>
+
+<button class="btn btn-primary" @onclick="AddPoints">Points</button>
+
+@code {
+    // Buffalo, NY
+    private readonly double _latitude = 42.895715;
+    private readonly double _longitude = -78.78077;
+
+    private List<CoordinateEntity> Positions = new();
+
+    // Polyline encoded set of points in Buffalo, NY
+    // See https://developers.google.com/maps/documentation/utilities/polylineutility
+    private string polyline = "itwdGvh_`NpF@?uEAaGpOPGrX";
+
+    GraphicsLayer pointsLayer;
+
+    private async void AddPoints()
+    {
+        try
+        {
+            // This will return a set of lat/lng
+            var points = PolylineEncoder.Decode(polyline);
+
+            List<Graphic> mapMoints = new();
+
+            foreach (var point in points)
+            {
+                var g = new Graphic(
+                    new Point(point.Longitude, point.Latitude),
+                    new SimpleMarkerSymbol(new Outline(new MapColor("white"), 1.0), new MapColor("red")));
+
+                mapMoints.Add(g);
+            }
+
+            // Uncomment out call to Clear() and the app will crash
+            /*
+                {"Value cannot be null. (Parameter 'jsObjectReference')"}
+                Data: {System.Collections.ListDictionaryInternal}
+                HResult: -2147467261
+                HelpLink: null
+                InnerException: null
+                Message: "Value cannot be null. (Parameter 'jsObjectReference')"
+                ParamName: "jsObjectReference"
+                Source: "Microsoft.JSInterop"
+                StackTrace: "   at Microsoft.JSInterop.JSObjectReferenceExtensions.<InvokeVoidAsync>d__0.MoveNext()\r\n   at dymaptic.GeoBlazor.Core.Components.Layers.GraphicsLayer.<Clear>d__11.MoveNext()\r\n   at demo1.Pages.Map1.<AddPoints>d__6.MoveNext() in D:\\dev\\maui\\GeoBlazor\\demo1\\demo1\\Pages\\Map1.razor:line 64"
+                TargetSite: {Void MoveNext()}
+             */
+
+            //await pointsLayer.Clear();
+
+            // The first time the app is built, the points may appear. Subsequent runs will not show the points
+            await pointsLayer.Add(mapMoints);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+    }
+
+
+}
