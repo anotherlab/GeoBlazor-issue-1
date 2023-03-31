@@ -8,6 +8,7 @@ The points do not reliably show up on the map. The first time the app is compile
 ## Second problem ##
 Calling clear on the graphics layer will crash the app with an example like the following
 
+```
 {"Value cannot be null. (Parameter 'jsObjectReference')"}
     Data: {System.Collections.ListDictionaryInternal}
     HResult: -2147467261
@@ -18,8 +19,9 @@ Calling clear on the graphics layer will crash the app with an example like the 
     Source: "Microsoft.JSInterop"
     StackTrace: "   at Microsoft.JSInterop.JSObjectReferenceExtensions.<InvokeVoidAsync>d__0.MoveNext()\r\n   at dymaptic.GeoBlazor.Core.Components.Layers.GraphicsLayer.<Clear>d__11.MoveNext()\r\n   at demo1.Pages.Map1.<AddPoints>d__6.MoveNext() in D:\\dev\\maui\\GeoBlazor\\demo1\\demo1\\Pages\\Map1.razor:line 64"
     TargetSite: {Void MoveNext()}
+```
 
-## Steps ##
+## Steps to replicate the problems ##
 ### Missing points ###
 1. Restore the nuget packages
 2. Edit [MauiProgram.cs](https://github.com/anotherlab/GeoBlazor-issue-1/blob/main/demo1/MauiProgram.cs#L22) and replace "INSERT-YOUR-ESRI-API-KEY-HERE" with your API key
@@ -30,7 +32,8 @@ Calling clear on the graphics layer will crash the app with an example like the 
 
 ### GraphicsLayer.Clear() ###
 1. Stop the app
-2. Edit Index.razor and uncomment out the line with 'await pointsLayer.Clear()'
+2. Edit Index.razor and uncomment out the line with `await pointsLayer.Clear()`
 3. Run the app and press the "Points" button. This will crash the app at that line and with the message: "Value cannot be null. (Parameter 'jsObjectReference')"
 
-Tested on Windows 11 with Visual Studio 2022 17.5.3 and GeoBlazer 2.0.1.  Targets tested were Windows Desktop and Android 13
+Tested on Windows 11 with Visual Studio 2022 17.5.3 and GeoBlazer 2.0.1.  
+Targets tested were Windows Desktop and Android 13
